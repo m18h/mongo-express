@@ -35,27 +35,43 @@ View the album for more screenshots: (server status, database views, etc..)
 
 ## Development
 
-To test or develop with the latest version you can install using this git repository:
+To test or develop with the latest version (_master_ branch) you can install using this git repository:
 
-    npm i mongo-express@git+https://github.com/mongo-express/mongo-express.git#master
+    npm i mongo-express@github:mongo-express/mongo-express
+    OR
+    yarn add mongo-express@github:mongo-express/mongo-express
+    OR
+    pnpm add mongo-express@github:mongo-express/mongo-express
 
 Copy config.default.js to config.js and edit the default property to fit your local environment
 
 **Run the development build using:**
 
     npm run start-dev
+    OR
+    yarn start-dev
+    OR
+    pnpm run start-dev
 
-## Usage (npm / CLI)
+## Usage (npm / yarn / pnpm / CLI)
 
 _mongo-express_ requires Node.js v4 or higher.
 
 **To install:**
 
-    npm install -g mongo-express
+    npm i -g mongo-express
+    OR
+    yarn add -g mongo-express
+    OR
+    pnpm add -g mongo-express
 
 Or if you want to install a non-global copy:
 
-    npm install mongo-express
+    npm i mongo-express
+    OR
+    yarn add mongo-express
+    OR
+    pnpm add mongo-express
 
 By default `config.default.js` is used where the basic access authentication is `admin`:`pass`. This is obviously not safe, and there are warnings in the console.
 
@@ -128,7 +144,7 @@ $ docker run -it --rm -p 8081:8081 --network some-network mongo-express
 You can use the following [environment variables](https://docs.docker.com/reference/run/#env-environment-variables) to modify the container's configuration:
 
 | Name                                           | Default                                             | Description                                                                                                                                                                     |
-|------------------------------------------------|-----------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ---------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `ME_CONFIG_MONGODB_URL`                        | `mongodb://admin:pass@localhost:27017/db?ssl=false` |                                                                                                                                                                                 |
 | `ME_CONFIG_MONGODB_ENABLE_ADMIN`               | `false`                                             | Enable administrator access. Send strings: `"true"` or `"false"`.                                                                                                               |
 | `ME_CONFIG_MONGODB_AUTH_USERNAME`              | `admin`                                             | Database username (only needed if `ENABLE_ADMIN` is `"false"`).                                                                                                                 |
@@ -145,9 +161,12 @@ You can use the following [environment variables](https://docs.docker.com/refere
 | `ME_CONFIG_HEALTH_CHECK_PATH`                  | `/status`                                           | Set the mongo express healthcheck path. Remember to add the forward slash at the start.                                                                                         |
 | `ME_CONFIG_SITE_COOKIESECRET`                  | `cookiesecret`                                      | String used by [cookie-parser middleware](https://www.npmjs.com/package/cookie-parser) to sign cookies.                                                                         |
 | `ME_CONFIG_SITE_SESSIONSECRET`                 | `sessionsecret`                                     | String used to sign the session ID cookie by [express-session middleware](https://www.npmjs.com/package/express-session).                                                       |
-| `ME_CONFIG_BASICAUTH`                          | `false`                                             | Enable Basic Authentication. Send strings: `"true"` or `"false"`.                                                                                                               |
-| `ME_CONFIG_BASICAUTH_USERNAME`                 | ``                                                  | mongo-express web login name. Sending an empty string will disable basic authentication.                                                                                        |
-| `ME_CONFIG_BASICAUTH_PASSWORD`                 | ``                                                  | mongo-express web login password.                                                                                                                                               |
+| `ME_CONFIG_BASICAUTH`                          | `false`                                             | Deprecated, use `ME_CONFIG_BASICAUTH_ENABLED` instead.                                                                                                                          |
+| `ME_CONFIG_BASICAUTH_ENABLED`                  | `false`                                             | Enable Basic Authentication. Send strings: `"true"` or `"false"`.                                                                                                               |
+| `ME_CONFIG_BASICAUTH_USERNAME`                 | ``                                                  | mongo-express web login name. If not defined, `admin` is the username.                                                                                                          |
+| `ME_CONFIG_BASICAUTH_USERNAME_FILE`            | ``                                                  | File version of `ME_CONFIG_BASICAUTH_USERNAME`                                                                                                                                  |
+| `ME_CONFIG_BASICAUTH_PASSWORD`                 | ``                                                  | mongo-express web login password. If not defined, `pass` is the password.                                                                                                       |
+| `ME_CONFIG_BASICAUTH_PASSWORD_FILE`            | ``                                                  | File version of `ME_CONFIG_BASICAUTH_PASSWORD`                                                                                                                                  |
 | `ME_CONFIG_REQUEST_SIZE`                       | `100kb`                                             | Used to configure maximum Mongo update payload size. CRUD operations above this size will fail due to restrictions in [body-parser](https://www.npmjs.com/package/body-parser). |
 | `ME_CONFIG_OPTIONS_READONLY`                   | `false`                                             | if readOnly is true, components of writing are not visible.                                                                                                                     |
 | `ME_CONFIG_OPTIONS_FULLWIDTH_LAYOUT`           | `false`                                             | If set to true an alternative page layout is used utilizing full window width.                                                                                                  |
@@ -157,8 +176,6 @@ You can use the following [environment variables](https://docs.docker.com/refere
 | `ME_CONFIG_SITE_SSL_CRT_PATH`                  | ` `                                                 | SSL certificate file.                                                                                                                                                           |
 | `ME_CONFIG_SITE_SSL_KEY_PATH`                  | ` `                                                 | SSL key file.                                                                                                                                                                   |
 | `ME_CONFIG_SITE_GRIDFS_ENABLED`                | `false`                                             | Enable gridFS to manage uploaded files.                                                                                                                                         |
-| `ME_CONFIG_BASICAUTH_USERNAME_FILE`            | ``                                                  | File version of ME_CONFIG_BASICAUTH_USERNAME                                                                                                                                    |
-| `ME_CONFIG_BASICAUTH_PASSWORD_FILE`            | ``                                                  | File version of ME_CONFIG_BASICAUTH_PASSWORD                                                                                                                                    |
 | `ME_CONFIG_DOCUMENTS_PER_PAGE`                 | `10`                                                | How many documents you want to see at once in collection view                                                                                                                   |
 | `PORT`                                         | `8081`                                              | port that mongo-express will run on.                                                                                                                                            |
 | `VCAP_APP_HOST`                                | `localhost`                                         | address that mongo-express will listen on for incoming connections.                                                                                                             |
@@ -169,7 +186,7 @@ You can use the following [environment variables](https://docs.docker.com/refere
         --name mongo-express \
         --network web_default \
         -p 8081:8081 \
-        -e ME_CONFIG_BASICAUTH_USERNAME="" \
+        -e ME_CONFIG_BASICAUTH_ENABLED="false" \
         -e ME_CONFIG_MONGODB_URL="mongodb://mongo:27017" \
         mongo-express
 
@@ -198,7 +215,7 @@ Doing manually:
 
 - Git clone this repository
 - Create a new or use already created [MongoDB service](https://www.ibm.com/products/databases-for-mongodb)
-- Change the file `manifest.yml` to fit your IBM Cloud app and service environment
+- Change the file `examples/ibm-cloud/manifest.yml` to fit your IBM Cloud app and service environment
 
 Doing automatically:
 
